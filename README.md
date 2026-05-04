@@ -6,7 +6,7 @@
 <img src="https://capsule-render.vercel.app/api?type=rect&color=0:4F46E5,100:7C3AED&height=300&section=header&text=Smart%20Attendance&desc=Sistem%20Absensi%20Hybrid%20Online%20%2B%20Offline&fontSize=60&fontColor=ffffff&animation=scaleIn" width="100%" alt="Smart Attendance Banner"/>
 
 <p><strong>Sistem Absensi Hybrid (Online + Offline) untuk Perkuliahan</strong></p>
-<p><em>Hybrid Attendance System for University Classes — built with Laravel, QR Codes, and real-time analytics.</em></p>
+<p><em>Dibangun dengan Laravel, QR Code, dan Analitik Real-Time</em></p>
 
 [![Laravel](https://img.shields.io/badge/Laravel-13.x-red?style=for-the-badge&logo=laravel)](https://laravel.com)
 [![PHP](https://img.shields.io/badge/PHP-8.3+-777BB4?style=for-the-badge&logo=php)](https://php.net)
@@ -17,81 +17,81 @@
 
 ---
 
-## Table of Contents
+## Daftar Isi
 
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Quick Start (One-Liner Install)](#quick-start-one-liner-install)
-- [Manual Installation](#manual-installation)
-- [Configuration](#configuration)
-- [Usage Guide](#usage-guide)
+- [Fitur](#fitur)
+- [Teknologi](#teknologi)
+- [Cara Install Cepat](#cara-install-cepat)
+- [Cara Install Manual](#cara-install-manual)
+- [Konfigurasi](#konfigurasi)
+- [Panduan Penggunaan](#panduan-penggunaan)
   - [Admin](#admin)
-  - [Dosen (Lecturer)](#dosen-lecturer)
-  - [Mahasiswa (Student)](#mahasiswa-student)
-- [API Documentation](#api-documentation)
+  - [Dosen](#dosen)
+  - [Mahasiswa](#mahasiswa)
+- [Dokumentasi API](#dokumentasi-api)
 - [Screenshots](#screenshots)
-- [Development](#development)
-- [Contributing](#contributing)
-- [License](#license)
+- [Pengembangan](#pengembangan)
+- [Berkontribusi](#berkontribusi)
+- [Lisensi](#lisensi)
 
 ---
 
-## Features
+## Fitur
 
-### Hybrid Attendance
-- **Offline Mode**: Dosen displays a dynamic QR code on the projector. Students scan using their phone camera.
-- **Online Mode**: Dosen creates a session with a meeting link (Zoom/Google Meet). Students can join via the provided link.
-- **Auto-Expiry**: Sessions automatically close after 15 minutes or via scheduled command.
+### Absensi Hybrid
+- **Mode Offline**: Dosen menampilkan QR Code dinamis di proyektor. Mahasiswa scan pakai kamera HP.
+- **Mode Online**: Dosen membuat sesi dengan link meeting (Zoom/Google Meet). Mahasiswa bisa langsung join.
+- **Auto Tutup**: Sesi otomatis tertutup setelah 15 menit atau lewat command terjadwal.
 
-### Multi-Role System
-- **Admin**: Full dashboard, analytics, manage users, courses, schedules, and enrollments.
-- **Dosen**: Create sessions, view real-time attendance, export CSV, manage student attendance records.
-- **Mahasiswa**: Scan QR for offline classes, join meeting links for online classes, view attendance history.
+### Multi-Role
+- **Admin**: Dashboard lengkap, analitik, kelola user, mata kuliah, jadwal, dan pendaftaran.
+- **Dosen**: Buat sesi, lihat kehadiran real-time, export CSV, kelola rekaman absensi mahasiswa.
+- **Mahasiswa**: Scan QR untuk kuliah offline, join link meeting untuk online, lihat riwayat kehadiran.
 
-### Real-Time Analytics
-- Attendance trends by department (Jurusan)
-- Attendance by semester
-- 30-day attendance trend charts
-- Course-level attendance rates
+### Analitik Real-Time
+- Trend kehadiran per jurusan
+- Kehadiran per semester
+- Grafik trend 30 hari
+- Tingkat kehadiran per mata kuliah
 
 ### REST API
-- Token-based authentication (Laravel Sanctum)
-- Endpoints for mobile app integration
-- Rate-limited endpoints for production use
+- Autentikasi token (Laravel Sanctum)
+- Endpoint untuk integrasi aplikasi mobile
+- Rate limiting untuk produksi
 
 ---
 
-## Tech Stack
+## Teknologi
 
-| Layer | Technology |
-|-------|------------|
+| Layer | Teknologi |
+|-------|-----------|
 | Backend | Laravel 13.x (PHP 8.3+) |
 | Frontend | Blade + Tailwind CSS 4.x + Vite |
 | Database | PostgreSQL 15+ |
 | Auth | Laravel Sanctum (API) + Session (Web) |
 | QR Scanner | html5-qrcode (browser-based) |
-| Charts | Chart.js 4.x |
+| Grafik | Chart.js 4.x |
 | Queue | Database (default) |
 
 ---
 
-## Quick Start (One-Liner Install)
+## Cara Install Cepat
 
-### Requirements
+### Prasyarat
 
-- PHP 8.3+ with extensions: `pgsql`, `mbstring`, `openssl`, `pdo`, `tokenizer`, `xml`, `ctype`, `json`, `bcmath`, `fileinfo`, `curl`
+- PHP 8.3+ dengan ekstensi: `pgsql`, `mbstring`, `openssl`, `pdo`, `tokenizer`, `xml`, `ctype`, `json`, `bcmath`, `fileinfo`, `curl`
 - PostgreSQL 15+
 - Composer 2.x
 - Node.js 20+ & npm 10+
 - Git
 
-### One-Liner
+### Install Sekali Klik
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/sfxcms/smart-attendance/main/install.sh | bash
 ```
 
-**Or step-by-step:**
+**Atau langkah-demi-langkah:**
 
 ```bash
 git clone https://github.com/sfxcms/smart-attendance.git
@@ -99,58 +99,58 @@ cd smart-attendance
 php install.php
 ```
 
-The `install.php` script will:
-1. Check PHP & PostgreSQL versions
-2. Install Composer dependencies
-3. Install npm dependencies & build assets
-4. Create `.env` from `.env.example`
+Script `install.php` akan:
+1. Cek versi PHP & PostgreSQL
+2. Install dependensi Composer
+3. Install dependensi npm & build asset
+4. Buat `.env` dari `.env.example`
 5. Generate application key
-6. Run migrations & seeders
-7. Create the first admin account
-8. Print login credentials
+6. Jalankan migration & seeder
+7. Buat akun admin pertama
+8. Cetak kredensial login
 
 ---
 
-## Manual Installation
+## Cara Install Manual
 
-### 1. Clone & Enter Directory
+### 1. Clone & Masuk Direktori
 
 ```bash
 git clone https://github.com/sfxcms/smart-attendance.git
 cd smart-attendance
 ```
 
-### 2. Install PHP Dependencies
+### 2. Install Dependensi PHP
 
 ```bash
 composer install --no-dev --optimize-autoloader
 ```
 
-For development:
+Untuk pengembangan:
 ```bash
 composer install
 ```
 
-### 3. Install Frontend Dependencies & Build
+### 3. Install Dependensi Frontend & Build
 
 ```bash
 npm install
 npm run build
 ```
 
-For development with hot reload:
+Untuk pengembangan dengan hot reload:
 ```bash
 npm run dev
 ```
 
-### 4. Environment Configuration
+### 4. Konfigurasi Environment
 
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
 
-Edit `.env` with your database credentials:
+Edit `.env` dengan kredensial database kamu:
 
 ```env
 DB_CONNECTION=pgsql
@@ -158,131 +158,131 @@ DB_HOST=127.0.0.1
 DB_PORT=5432
 DB_DATABASE=smart_attendance
 DB_USERNAME=postgres
-DB_PASSWORD=your_password
+DB_PASSWORD=password_kamu
 ```
 
-### 5. Database Setup
+### 5. Setup Database
 
 ```bash
-# Create PostgreSQL database
+# Buat database PostgreSQL
 createdb smart_attendance
 
-# Run migrations
+# Jalankan migration
 php artisan migrate
 
-# (Optional) Seed demo data
+# (Opsional) Seed data demo
 php artisan db:seed
 ```
 
-### 6. Storage Link
+### 6. Link Storage
 
 ```bash
 php artisan storage:link
 ```
 
-### 7. Queue Worker (for production)
+### 7. Queue Worker (untuk produksi)
 
 ```bash
 php artisan queue:work
 ```
 
-### 8. Schedule (Auto-Expire Sessions)
+### 8. Schedule (Auto-Tutup Sesi)
 
-Add to your server's crontab:
+Tambahkan ke crontab server:
 
 ```bash
 * * * * * cd /path/to/smart-attendance && php artisan schedule:run >> /dev/null 2>&1
 ```
 
-Or run locally:
+Atau jalankan secara lokal:
 ```bash
 php artisan schedule:work
 ```
 
-### 9. Serve Application
+### 9. Jalankan Aplikasi
 
 ```bash
 php artisan serve
 ```
 
-Access at `http://localhost:8000`
+Akses di `http://localhost:8000`
 
 ---
 
-## Configuration
+## Konfigurasi
 
-### Default Admin Account
+### Akun Admin Default
 
-If you seeded the database, the default admin is:
+Jika kamu menjalankan seeder, admin default adalah:
 
 | Field | Value |
 |-------|-------|
 | Email | `admin@university.ac.id` |
 | Password | `password` |
 
-> Change this immediately after first login.
+> **Penting**: Ganti password ini segera setelah login pertama.
 
-### Session Expiry
+### Masa Berlaku Sesi
 
-Sessions expire after **15 minutes** by default. Adjust in `app/Http/Controllers/Dosen/SessionController.php`:
+Sesi berlaku selama **15 menit** secara default. Ubah di `app/Http/Controllers/Dosen/SessionController.php`:
 
 ```php
-'expires_at' => now()->addMinutes(15), // Change 15 to your preference
+'expires_at' => now()->addMinutes(15), // Ubah 15 sesuai kebutuhan
 ```
 
-### API Rate Limiting
+### Rate Limiting API
 
-API endpoints are rate-limited. Adjust in `routes/api.php`:
+Endpoint API memiliki rate limiting. Ubah di `routes/api.php`:
 
 ```php
-->middleware('throttle:60,1') // 60 requests per minute
+->middleware('throttle:60,1') // 60 request per menit
 ```
 
 ---
 
-## Usage Guide
+## Panduan Penggunaan
 
 ### Admin
 
-After logging in as admin, you can:
+Setelah login sebagai admin, kamu bisa:
 
-1. **Dashboard** — View overall statistics and charts
-2. **Mata Kuliah (Courses)** — Manage courses and assign lecturers
-3. **Jurusan (Departments)** — Manage academic departments
-4. **Jadwal (Schedules)** — Create class schedules (day, time, room)
-5. **Pengguna (Users)** — Create/edit admin, dosen, and mahasiswa accounts
-6. **Pendaftaran (Enrollments)** — Enroll students into departments/semesters
-7. **Mahasiswa** — View student enrollment status
-8. **Analitik** — Full attendance analytics with charts
+1. **Dashboard** — Lihat statistik dan grafik keseluruhan
+2. **Mata Kuliah** — Kelola mata kuliah dan tetapkan dosen pengajar
+3. **Jurusan** — Kelola jurusan akademik
+4. **Jadwal** — Buat jadwal kuliah (hari, jam, ruang)
+5. **Pengguna** — Buat/edit akun admin, dosen, dan mahasiswa
+6. **Pendaftaran** — Daftarkan mahasiswa ke jurusan/semester
+7. **Mahasiswa** — Lihat status pendaftaran mahasiswa
+8. **Analitik** — Analitik kehadiran lengkap dengan grafik
 
-### Dosen (Lecturer)
+### Dosen
 
-1. **Login** — Access your lecturer dashboard
-2. **Dashboard** — See today's schedule and active sessions
-3. **Buat Sesi** — Choose a schedule, select mode:
-   - **Offline**: Displays QR code for students to scan
-   - **Online**: Provide meeting link (Zoom/Google Meet)
-4. **Lihat Sesi** — Monitor real-time attendance, export to CSV
-5. **Tutup Sesi** — Close the session manually
-6. **Statistik Kehadiran** — View student attendance statistics
+1. **Login** — Akses dashboard dosen
+2. **Dashboard** — Lihat jadwal hari ini dan sesi aktif
+3. **Buat Sesi** — Pilih jadwal, pilih mode:
+   - **Offline**: Tampilkan QR Code untuk mahasiswa scan
+   - **Online**: Berikan link meeting (Zoom/Google Meet)
+4. **Lihat Sesi** — Pantau kehadiran real-time, export ke CSV
+5. **Tutup Sesi** — Tutup sesi secara manual
+6. **Statistik Kehadiran** — Lihat statistik kehadiran mahasiswa
 
-### Mahasiswa (Student)
+### Mahasiswa
 
-1. **Login** — See today's class schedule
-2. **Scan QR** — For offline sessions:
-   - Allow camera access
-   - Scan the QR code displayed by the dosen
-   - Or enter the session code manually
-3. **Online Sessions** — For online sessions:
-   - Click the **Buka Meeting** link directly
-   - Attendance is recorded automatically
-4. **Riwayat** — View full attendance history with filters (course, month, status)
+1. **Login** — Lihat jadwal kuliah hari ini
+2. **Scan QR** — Untuk sesi offline:
+   - Izinkan akses kamera
+   - Scan QR Code yang ditampilkan dosen
+   - Atau masukkan kode sesi manual
+3. **Sesi Online** — Untuk sesi online:
+   - Klik link **Buka Meeting** langsung
+   - Kehadiran tercatat otomatis
+4. **Riwayat** — Lihat riwayat kehadiran lengkap dengan filter (mata kuliah, bulan, status)
 
 ---
 
-## API Documentation
+## Dokumentasi API
 
-### Authentication
+### Autentikasi
 
 #### Login
 ```http
@@ -310,26 +310,26 @@ POST /api/logout
 Authorization: Bearer {token}
 ```
 
-### Mahasiswa Endpoints
+### Endpoint Mahasiswa
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/schedules` | Today's enrolled schedules |
+| Method | Endpoint | Deskripsi |
+|--------|----------|-----------|
+| GET | `/api/schedules` | Jadwal kuliah hari ini |
 | POST | `/api/attendance/scan` | Scan QR code |
-| GET | `/api/attendance/history` | Attendance history |
+| GET | `/api/attendance/history` | Riwayat kehadiran |
 
-### Dosen Endpoints
+### Endpoint Dosen
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/dosen/sessions` | List sessions |
-| POST | `/api/dosen/sessions` | Create new session |
-| GET | `/api/dosen/sessions/{id}/attendance` | Session attendance |
-| POST | `/api/dosen/sessions/{id}/close` | Close session |
-| GET | `/api/dosen/courses` | My courses |
-| GET | `/api/dosen/courses/{id}/schedules` | Course schedules |
+| Method | Endpoint | Deskripsi |
+|--------|----------|-----------|
+| GET | `/api/dosen/sessions` | Daftar sesi |
+| POST | `/api/dosen/sessions` | Buat sesi baru |
+| GET | `/api/dosen/sessions/{id}/attendance` | Kehadiran sesi |
+| POST | `/api/dosen/sessions/{id}/close` | Tutup sesi |
+| GET | `/api/dosen/courses` | Mata kuliah saya |
+| GET | `/api/dosen/courses/{id}/schedules` | Jadwal mata kuliah |
 
-### Scan QR (Example)
+### Contoh Scan QR
 
 ```http
 POST /api/attendance/scan
@@ -345,100 +345,100 @@ Content-Type: application/json
 
 ## Screenshots
 
-### 👑 Admin Panel
+### 👑 Panel Admin
 
-| Dashboard | Analytics | Manajemen Mata Kuliah |
+| Dashboard | Analitik | Manajemen Mata Kuliah |
 |:----------:|:----------:|:---------------------:|
-| ![Admin Dashboard](docs/screenshots/admin-dashboard.png) | ![Analytics](docs/screenshots/admin-analytics.png) | ![Courses](docs/screenshots/admin-courses.png) |
+| ![Admin Dashboard](docs/screenshots/admin-dashboard.png) | ![Analitik](docs/screenshots/admin-analytics.png) | ![Mata Kuliah](docs/screenshots/admin-courses.png) |
 
-### 👨‍🏫 Dosen (Lecturer) Panel
+### 👨‍🏫 Panel Dosen
 
 | Dashboard | Buat Sesi (Offline/Online) | Daftar Sesi |
 |:----------:|:--------------------------:|:-----------:|
-| ![Dosen Dashboard](docs/screenshots/dosen-dashboard.png) | ![Buat Sesi](docs/screenshots/dosen-create-session.png) | ![Sesi](docs/screenshots/dosen-sessions.png) |
+| ![Dashboard Dosen](docs/screenshots/dosen-dashboard.png) | ![Buat Sesi](docs/screenshots/dosen-create-session.png) | ![Daftar Sesi](docs/screenshots/dosen-sessions.png) |
 
-### 👨‍🎓 Mahasiswa (Student) Panel
+### 👨‍🎓 Panel Mahasiswa
 
 | Dashboard | Scan QR / Online | Riwayat Kehadiran |
 |:----------:|:----------------:|:-----------------:|
-| ![Mahasiswa Dashboard](docs/screenshots/mahasiswa-dashboard.png) | ![Scan](docs/screenshots/mahasiswa-scan.png) | ![History](docs/screenshots/mahasiswa-history.png) |
+| ![Dashboard Mahasiswa](docs/screenshots/mahasiswa-dashboard.png) | ![Scan QR](docs/screenshots/mahasiswa-scan.png) | ![Riwayat](docs/screenshots/mahasiswa-history.png) |
 
-### 🔐 Login Page
+### 🔐 Halaman Login
 
-![Login Page](docs/screenshots/login-page.png)
+![Halaman Login](docs/screenshots/login-page.png)
 
 ---
 
-## Development
+## Pengembangan
 
-### Running Tests
+### Menjalankan Tes
 
 ```bash
 php artisan test
 ```
 
-### Code Style
+### Gaya Kode
 
-This project follows PSR-12 coding standards.
+Proyek ini mengikuti standar PSR-12.
 
 ```bash
 vendor/bin/pint
 ```
 
-### Useful Commands
+### Perintah Berguna
 
 ```bash
-# Clear all caches
+# Bersihkan semua cache
 php artisan optimize:clear
 
-# Check expired sessions manually
+# Cek sesi kadaluarsa secara manual
 php artisan app:expire-sessions
 
-# Database refresh with seeders
+# Refresh database dengan seeder
 php artisan migrate:fresh --seed
 ```
 
 ---
 
-## Contributing
+## Berkontribusi
 
-Contributions are welcome! Please follow these steps:
+Kontribusi sangat diterima! Silakan ikuti langkah-langkah ini:
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+1. Fork repository
+2. Buat branch fitur kamu (`git checkout -b feature/FiturKerenn`)
+3. Commit perubahan (`git commit -m 'Tambah fitur keren'`)
+4. Push ke branch (`git push origin feature/FiturKerenn`)
+5. Buka Pull Request
 
-Please make sure to update tests as appropriate.
-
----
-
-## License
-
-This project is open-sourced software licensed under the [MIT license](LICENSE).
+Jangan lupa update tes sesuai perubahan.
 
 ---
 
-## Acknowledgments
+## Lisensi
 
-- Built with [Laravel](https://laravel.com)
-- Styled with [Tailwind CSS](https://tailwindcss.com)
-- QR scanning powered by [html5-qrcode](https://github.com/mebjas/html5-qrcode)
-- Charts by [Chart.js](https://www.chartjs.org)
+Proyek ini adalah open-source dengan lisensi MIT.
 
 ---
 
-## Support
+## Terima Kasih
+
+- Dibangun dengan [Laravel](https://laravel.com)
+- Styled dengan [Tailwind CSS](https://tailwindcss.com)
+- QR scanning oleh [html5-qrcode](https://github.com/mebjas/html5-qrcode)
+- Grafik oleh [Chart.js](https://www.chartjs.org)
+
+---
+
+## Dukungan
 
 <div align="center">
 
-⭐ If you find this project helpful, please give it a star on GitHub!
+⭐ Jika proyek ini bermanfaat, jangan lupa kasih star di GitHub!
 
 [![GitHub stars](https://img.shields.io/github/stars/sfxcms/smart-attendance?style=social)](https://github.com/sfxcms/smart-attendance)
 [![GitHub forks](https://img.shields.io/github/forks/sfxcms/smart-attendance?style=social)](https://github.com/sfxcms/smart-attendance)
 [![GitHub issues](https://img.shields.io/github/issues/sfxcms/smart-attendance?style=social)](https://github.com/sfxcms/smart-attendance/issues)
 
-For issues and feature requests, please use the [GitHub Issues](https://github.com/sfxcms/smart-attendance/issues) page.
+Untuk masalah dan permintaan fitur, silakan gunakan [GitHub Issues](https://github.com/sfxcms/smart-attendance/issues).
 
 </div>
