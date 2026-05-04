@@ -1,12 +1,19 @@
 # Smart Attendance System
 
-> **Sistem Absensi Hybrid (Online + Offline) untuk Perkuliahan**
-> Hybrid Attendance System for University Classes — built with Laravel, QR Codes, and real-time analytics.
+<div align="center">
 
-[![Laravel](https://img.shields.io/badge/Laravel-13.x-red?style=flat-square&logo=laravel)](https://laravel.com)
-[![PHP](https://img.shields.io/badge/PHP-8.3+-777BB4?style=flat-square&logo=php)](https://php.net)
-[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.x-06B6D4?style=flat-square&logo=tailwindcss)](https://tailwindcss.com)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-4169E1?style=flat-square&logo=postgresql)](https://postgresql.org)
+<!-- Hero Banner SVG -->
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:4F46E5,100:7C3AED&height=300&section=header&text=Smart%20Attendance&desc=Sistem%20Absensi%20Hybrid%20Online%20%2B%20Offline&fontSize=60&fontColor=ffffff&animation=scaleIn" width="100%" alt="Smart Attendance Banner"/>
+
+<p><strong>Sistem Absensi Hybrid (Online + Offline) untuk Perkuliahan</strong></p>
+<p><em>Hybrid Attendance System for University Classes — built with Laravel, QR Codes, and real-time analytics.</em></p>
+
+[![Laravel](https://img.shields.io/badge/Laravel-13.x-red?style=for-the-badge&logo=laravel)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.3+-777BB4?style=for-the-badge&logo=php)](https://php.net)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.x-06B6D4?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-4169E1?style=for-the-badge&logo=postgresql)](https://postgresql.org)
+
+</div>
 
 ---
 
@@ -338,11 +345,27 @@ Content-Type: application/json
 
 ## Screenshots
 
-> Add your screenshots here to showcase the application.
+### 👑 Admin Panel
 
-| Dashboard Admin | Dashboard Dosen | Scan QR |
-|-----------------|-----------------|---------|
-| ![Admin](docs/screenshots/admin-dashboard.png) | ![Dosen](docs/screenshots/dosen-dashboard.png) | ![Scan](docs/screenshots/scan-qr.png) |
+| Dashboard | Analytics | Manajemen Mata Kuliah |
+|:----------:|:----------:|:---------------------:|
+| ![Admin Dashboard](docs/screenshots/admin-dashboard.png) | ![Analytics](docs/screenshots/admin-analytics.png) | ![Courses](docs/screenshots/admin-courses.png) |
+
+### 👨‍🏫 Dosen (Lecturer) Panel
+
+| Dashboard | Buat Sesi (Offline/Online) | Daftar Sesi |
+|:----------:|:--------------------------:|:-----------:|
+| ![Dosen Dashboard](docs/screenshots/dosen-dashboard.png) | ![Buat Sesi](docs/screenshots/dosen-create-session.png) | ![Sesi](docs/screenshots/dosen-sessions.png) |
+
+### 👨‍🎓 Mahasiswa (Student) Panel
+
+| Dashboard | Scan QR / Online | Riwayat Kehadiran |
+|:----------:|:----------------:|:-----------------:|
+| ![Mahasiswa Dashboard](docs/screenshots/mahasiswa-dashboard.png) | ![Scan](docs/screenshots/mahasiswa-scan.png) | ![History](docs/screenshots/mahasiswa-history.png) |
+
+### 🔐 Login Page
+
+![Login Page](docs/screenshots/login-page.png)
 
 ---
 
@@ -408,6 +431,14 @@ This project is open-sourced software licensed under the [MIT license](LICENSE).
 
 ## Support
 
-If you find this project helpful, please give it a ⭐ on GitHub!
+<div align="center">
+
+⭐ If you find this project helpful, please give it a star on GitHub!
+
+[![GitHub stars](https://img.shields.io/github/stars/sfxcms/smart-attendance?style=social)](https://github.com/sfxcms/smart-attendance)
+[![GitHub forks](https://img.shields.io/github/forks/sfxcms/smart-attendance?style=social)](https://github.com/sfxcms/smart-attendance)
+[![GitHub issues](https://img.shields.io/github/issues/sfxcms/smart-attendance?style=social)](https://github.com/sfxcms/smart-attendance/issues)
 
 For issues and feature requests, please use the [GitHub Issues](https://github.com/sfxcms/smart-attendance/issues) page.
+
+</div>
