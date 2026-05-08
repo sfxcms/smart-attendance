@@ -20,7 +20,7 @@ class SessionController extends Controller
         $query = AttendanceSession::where('dosen_id', $dosenId)
             ->with(['course', 'schedule']);
 
-        if ($request->filled('status') && in_array($request->status, ['aktif', 'ditutup'])) {
+        if ($request->filled('status') && in_array($request->status, ['aktif', 'ditutup', 'kedaluwarsa'])) {
             $query->where('status', $request->status);
         }
 
@@ -29,7 +29,7 @@ class SessionController extends Controller
         return view('dosen.sessions.index', compact('sessions'));
     }
 
-    public function create(Schedule $schedule = null)
+    public function create(?Schedule $schedule = null)
     {
         $dosenId = Auth::id();
 
@@ -43,8 +43,8 @@ class SessionController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'schedule_id'  => 'required|exists:schedules,id',
-            'tipe_sesi'    => 'required|in:online,offline',
+            'schedule_id' => 'required|exists:schedules,id',
+            'tipe_sesi' => 'required|in:online,offline',
             'link_meeting' => 'required_if:tipe_sesi,online|nullable|url|max:500',
         ]);
 
@@ -57,17 +57,17 @@ class SessionController extends Controller
             abort(403, 'Anda tidak mengajar mata kuliah ini.');
         }
 
-        $qrToken = 'qr_' . Str::random(32) . '_' . time();
+        $qrToken = 'qr_'.Str::random(32).'_'.time();
 
         $session = AttendanceSession::create([
             'schedule_id' => $validated['schedule_id'],
-            'course_id'   => $schedule->course_id,
-            'dosen_id'    => $dosenId,
-            'status'      => 'aktif',
-            'tipe_sesi'   => $validated['tipe_sesi'],
+            'course_id' => $schedule->course_id,
+            'dosen_id' => $dosenId,
+            'status' => 'aktif',
+            'tipe_sesi' => $validated['tipe_sesi'],
             'link_meeting' => $validated['link_meeting'] ?? null,
-            'expires_at'  => now()->addMinutes(15),
-            'qr_code'     => $qrToken,
+            'expires_at' => now()->addMinutes(15),
+            'qr_code' => $qrToken,
             'total_mahasiswa' => Enrollment::where('jurusan_id', $schedule->course->jurusan_id)
                 ->where('semester', $schedule->course->semester)
                 ->count(),
@@ -93,16 +93,16 @@ class SessionController extends Controller
             },
         ]);
 
-        $qrContent = config('app.url') . '/dosen/sessions/' . $session->id;
+        $qrContent = config('app.url').'/attendance/scan/'.$session->id.'?token='.$session->qr_code;
         $qrSvg = QrCode::format('svg')->size(300)->generate($qrContent);
-        $qrDataUri = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
+        $qrDataUri = 'data:image/svg+xml;base64,'.base64_encode($qrSvg);
 
         $stats = [
-            'hadir'  => $session->attendances->where('status', 'hadir')->count(),
-            'izin'   => $session->attendances->where('status', 'izin')->count(),
-            'sakit'  => $session->attendances->where('status', 'sakit')->count(),
-            'alpha'  => $session->attendances->where('status', 'alpha')->count(),
-            'belum'  => $session->total_mahasiswa - $session->attendances->count(),
+            'hadir' => $session->attendances->where('status', 'hadir')->count(),
+            'izin' => $session->attendances->where('status', 'izin')->count(),
+            'sakit' => $session->attendances->where('status', 'sakit')->count(),
+            'alpha' => $session->attendances->where('status', 'alpha')->count(),
+            'belum' => $session->total_mahasiswa - $session->attendances->count(),
         ];
 
         return view('dosen.sessions.show', compact('session', 'qrDataUri', 'stats'));

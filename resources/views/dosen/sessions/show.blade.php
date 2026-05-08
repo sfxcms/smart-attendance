@@ -74,6 +74,8 @@
                                 <dd>
                                     @if($session->status === 'aktif')
                                         <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Aktif</span>
+                                    @elseif($session->status === 'kedaluwarsa')
+                                        <span class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">Kedaluwarsa</span>
                                     @else
                                         <span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">Ditutup</span>
                                     @endif
@@ -115,6 +117,16 @@
                         <h3 class="text-sm font-medium text-gray-700 mb-4">QR Code Absensi</h3>
                         <div class="flex justify-center">
                             <img src="{{ $qrDataUri }}" alt="QR Code" class="w-64 h-64">
+                        </div>
+                        <div class="mt-4 text-left">
+                            <label for="scan-url" class="block text-xs font-medium text-gray-500 mb-1">Link scan cadangan</label>
+                            <input
+                                id="scan-url"
+                                type="text"
+                                readonly
+                                value="{{ config('app.url') . '/attendance/scan/' . $session->id . '?token=' . $session->qr_code }}"
+                                class="w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-xs text-gray-700"
+                            >
                         </div>
                         <p class="text-xs text-gray-400 mt-3">Berakhir pada {{ $session->expires_at->format('H:i') }}</p>
                     </div>

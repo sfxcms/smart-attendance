@@ -26,7 +26,7 @@ class DosenController extends Controller
         $query = AttendanceSession::where('dosen_id', $dosenId)
             ->with(['course', 'schedule']);
 
-        if ($request->filled('status') && in_array($request->status, ['aktif', 'ditutup'])) {
+        if ($request->filled('status') && in_array($request->status, ['aktif', 'ditutup', 'kedaluwarsa'])) {
             $query->where('status', $request->status);
         }
 
@@ -76,14 +76,14 @@ class DosenController extends Controller
         $schedule = Schedule::with('course')->findOrFail($request->input('schedule_id'));
 
         $isOwner = $schedule->course->lecturers()->where('users.id', $dosenId)->exists();
-        if (!$isOwner) {
+        if (! $isOwner) {
             return response()->json([
                 'success' => false,
                 'message' => 'Anda tidak mengajar mata kuliah ini.',
             ], 403);
         }
 
-        $qrToken = 'qr_' . Str::random(32) . '_' . time();
+        $qrToken = 'qr_'.Str::random(32).'_'.time();
 
         $session = AttendanceSession::create([
             'schedule_id' => $schedule->id,
@@ -99,7 +99,7 @@ class DosenController extends Controller
                 ->count(),
         ]);
 
-        $qrContent = config('app.url') . '/attendance/scan/' . $session->id . '?token=' . $qrToken;
+        $qrContent = config('app.url').'/attendance/scan/'.$session->id.'?token='.$qrToken;
 
         return response()->json([
             'success' => true,
@@ -124,7 +124,7 @@ class DosenController extends Controller
         $dosenId = Auth::id();
         $session = AttendanceSession::with(['course', 'schedule'])->find($sessionId);
 
-        if (!$session) {
+        if (! $session) {
             return response()->json([
                 'success' => false,
                 'message' => 'Sesi absensi tidak ditemukan.',
@@ -187,7 +187,7 @@ class DosenController extends Controller
         $dosenId = Auth::id();
         $session = AttendanceSession::find($sessionId);
 
-        if (!$session) {
+        if (! $session) {
             return response()->json([
                 'success' => false,
                 'message' => 'Sesi absensi tidak ditemukan.',
@@ -201,10 +201,10 @@ class DosenController extends Controller
             ], 403);
         }
 
-        if ($session->status === 'ditutup') {
+        if ($session->status !== 'aktif') {
             return response()->json([
                 'success' => false,
-                'message' => 'Sesi sudah ditutup sebelumnya.',
+                'message' => 'Sesi ini sudah tidak aktif.',
             ], 400);
         }
 
@@ -251,7 +251,7 @@ class DosenController extends Controller
             $q->where('users.id', $dosenId);
         })->where('id', $courseId)->exists();
 
-        if (!$isOwner) {
+        if (! $isOwner) {
             return response()->json([
                 'success' => false,
                 'message' => 'Anda tidak mengajar mata kuliah ini.',
