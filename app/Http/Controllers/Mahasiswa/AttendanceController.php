@@ -3,17 +3,21 @@
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Attendance;
+use App\Models\AttendanceSession;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Schedule;
-use App\Models\AttendanceSession;
-use App\Models\Attendance;
+use App\Services\QRCodeService;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class AttendanceController extends Controller
 {
+    public function __construct(private readonly QRCodeService $qrCodeService) {}
+
     public function showScan()
     {
         $userId = Auth::id();
@@ -26,7 +30,7 @@ class AttendanceController extends Controller
                 ->from('courses')
                 ->join('enrollments', function ($join) {
                     $join->on('courses.jurusan_id', '=', 'enrollments.jurusan_id')
-                         ->on('courses.semester', '=', 'enrollments.semester');
+                        ->on('courses.semester', '=', 'enrollments.semester');
                 })
                 ->whereColumn('schedules.course_id', 'courses.id')
                 ->where('enrollments.user_id', $userId);
@@ -58,26 +62,39 @@ class AttendanceController extends Controller
 
         $sessionId = $this->parseSessionId($qrData);
 
-        if (!$sessionId) {
+        if (! $sessionId) {
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Data QR tidak valid.',
                 ], 400);
             }
+
             return redirect()->back()->with('error', 'Data QR tidak valid.');
         }
 
         $session = AttendanceSession::with(['course', 'schedule'])->find($sessionId);
 
-        if (!$session) {
+        if (! $session) {
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Sesi absensi tidak ditemukan.',
                 ], 404);
             }
+
             return redirect()->back()->with('error', 'Sesi absensi tidak ditemukan.');
+        }
+
+        if (! $this->qrCodeService->verifyQrCode($qrData, $session)) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Token QR tidak valid.',
+                ], 400);
+            }
+
+            return redirect()->back()->with('error', 'Token QR tidak valid.');
         }
 
         if ($session->status !== 'aktif') {
@@ -87,6 +104,7 @@ class AttendanceController extends Controller
                     'message' => 'Sesi absensi sudah ditutup.',
                 ], 400);
             }
+
             return redirect()->back()->with('error', 'Sesi absensi sudah ditutup.');
         }
 
@@ -97,6 +115,7 @@ class AttendanceController extends Controller
                     'message' => 'Sesi absensi sudah kadaluwarsa.',
                 ], 400);
             }
+
             return redirect()->back()->with('error', 'Sesi absensi sudah kadaluwarsa.');
         }
 
@@ -105,13 +124,14 @@ class AttendanceController extends Controller
             ->where('semester', $session->course->semester)
             ->exists();
 
-        if (!$isEnrolled) {
+        if (! $isEnrolled) {
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Anda tidak terdaftar di mata kuliah ini.',
                 ], 403);
             }
+
             return redirect()->back()->with('error', 'Anda tidak terdaftar di mata kuliah ini.');
         }
 
@@ -126,17 +146,31 @@ class AttendanceController extends Controller
                     'message' => 'Anda sudah melakukan absensi pada sesi ini.',
                 ], 400);
             }
+
             return redirect()->back()->with('error', 'Anda sudah melakukan absensi pada sesi ini.');
         }
 
-        Attendance::create([
-            'attendance_session_id' => $session->id,
-            'user_id' => $userId,
-            'status' => 'hadir',
-            'scanned_at' => now(),
-        ]);
+        try {
+            Attendance::create([
+                'attendance_session_id' => $session->id,
+                'user_id' => $userId,
+                'status' => 'hadir',
+                'scanned_at' => now(),
+            ]);
+        } catch (QueryException $exception) {
+            if ($this->isDuplicateAttendanceConstraintViolation($exception)) {
+                if ($request->expectsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Anda sudah melakukan absensi pada sesi ini.',
+                    ], 409);
+                }
 
-        $session->increment('total_mahasiswa');
+                return redirect()->back()->with('error', 'Anda sudah melakukan absensi pada sesi ini.');
+            }
+
+            throw $exception;
+        }
 
         if ($request->expectsJson()) {
             return response()->json([
@@ -145,13 +179,13 @@ class AttendanceController extends Controller
                 'data' => [
                     'course' => $session->course->nama_mk ?? 'Mata Kuliah',
                     'time' => $session->schedule
-                        ? $session->schedule->jam_mulai . ' - ' . $session->schedule->jam_selesai
+                        ? $session->schedule->jam_mulai.' - '.$session->schedule->jam_selesai
                         : '-',
                 ],
             ]);
         }
 
-        return redirect()->back()->with('success', 'Absensi berhasil untuk ' . ($session->course->nama_mk ?? 'Mata Kuliah') . '!');
+        return redirect()->back()->with('success', 'Absensi berhasil untuk '.($session->course->nama_mk ?? 'Mata Kuliah').'!');
     }
 
     public function history(Request $request)
@@ -217,6 +251,7 @@ class AttendanceController extends Controller
             '/\/attendance-sessions?\/(\d+)/i',
             '/\/sessions?\/(\d+)/i',
             '/[?&]id[=:](\d+)/i',
+            '/\/attendance\/scan\/(\d+)/i',
         ];
 
         foreach ($patterns as $pattern) {
@@ -235,5 +270,10 @@ class AttendanceController extends Controller
         }
 
         return null;
+    }
+
+    private function isDuplicateAttendanceConstraintViolation(QueryException $exception): bool
+    {
+        return $exception->getCode() === '23000';
     }
 }

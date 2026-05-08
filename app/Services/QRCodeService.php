@@ -9,7 +9,7 @@ class QRCodeService
 {
     public function generateQrCode(AttendanceSession $session): string
     {
-        $qrData = config('app.url') . '/attendance/scan/' . $session->id . '?token=' . $this->generateToken($session);
+        $qrData = config('app.url').'/attendance/scan/'.$session->id.'?token='.$session->qr_code;
 
         return QrCode::size(300)->generate($qrData);
     }
@@ -17,12 +17,12 @@ class QRCodeService
     public function verifyQrCode(string $qrData, AttendanceSession $session): bool
     {
         $parsed = parse_url($qrData);
-        if (!isset($parsed['path']) || !isset($parsed['query'])) {
+        if (! isset($parsed['path']) || ! isset($parsed['query'])) {
             return false;
         }
 
         preg_match('#/attendance/scan/(\d+)$#', $parsed['path'], $matches);
-        if (!isset($matches[1])) {
+        if (! isset($matches[1])) {
             return false;
         }
 
@@ -34,11 +34,6 @@ class QRCodeService
             return false;
         }
 
-        return $token === $this->generateToken($session);
-    }
-
-    private function generateToken(AttendanceSession $session): string
-    {
-        return hash('sha256', $session->id . $session->expires_at);
+        return is_string($session->qr_code) && hash_equals($session->qr_code, (string) $token);
     }
 }

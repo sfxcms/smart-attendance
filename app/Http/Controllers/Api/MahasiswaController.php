@@ -8,6 +8,8 @@ use App\Models\Attendance;
 use App\Models\AttendanceSession;
 use App\Models\Enrollment;
 use App\Models\Schedule;
+use App\Services\QRCodeService;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,6 +17,8 @@ use Illuminate\Support\Facades\DB;
 
 class MahasiswaController extends Controller
 {
+    public function __construct(private readonly QRCodeService $qrCodeService) {}
+
     /**
      * Get today's enrolled schedules for the authenticated mahasiswa.
      */
@@ -29,7 +33,7 @@ class MahasiswaController extends Controller
                 ->from('courses')
                 ->join('enrollments', function ($join) {
                     $join->on('courses.jurusan_id', '=', 'enrollments.jurusan_id')
-                         ->on('courses.semester', '=', 'enrollments.semester');
+                        ->on('courses.semester', '=', 'enrollments.semester');
                 })
                 ->whereColumn('schedules.course_id', 'courses.id')
                 ->where('enrollments.user_id', $userId);
@@ -74,7 +78,7 @@ class MahasiswaController extends Controller
         $userId = Auth::id();
         $sessionId = $this->parseSessionId($request->input('qr_data'));
 
-        if (!$sessionId) {
+        if (! $sessionId) {
             return response()->json([
                 'success' => false,
                 'message' => 'Data QR tidak valid.',
@@ -83,11 +87,18 @@ class MahasiswaController extends Controller
 
         $session = AttendanceSession::with(['course', 'schedule'])->find($sessionId);
 
-        if (!$session) {
+        if (! $session) {
             return response()->json([
                 'success' => false,
                 'message' => 'Sesi absensi tidak ditemukan.',
             ], 404);
+        }
+
+        if (! $this->qrCodeService->verifyQrCode($request->input('qr_data'), $session)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Token QR tidak valid.',
+            ], 400);
         }
 
         if ($session->status !== 'aktif') {
@@ -109,7 +120,7 @@ class MahasiswaController extends Controller
             ->where('semester', $session->course->semester)
             ->exists();
 
-        if (!$isEnrolled) {
+        if (! $isEnrolled) {
             return response()->json([
                 'success' => false,
                 'message' => 'Anda tidak terdaftar di mata kuliah ini.',
@@ -127,12 +138,23 @@ class MahasiswaController extends Controller
             ], 409);
         }
 
-        Attendance::create([
-            'attendance_session_id' => $session->id,
-            'user_id' => $userId,
-            'status' => 'hadir',
-            'scanned_at' => now(),
-        ]);
+        try {
+            Attendance::create([
+                'attendance_session_id' => $session->id,
+                'user_id' => $userId,
+                'status' => 'hadir',
+                'scanned_at' => now(),
+            ]);
+        } catch (QueryException $exception) {
+            if ($this->isDuplicateAttendanceConstraintViolation($exception)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Anda sudah melakukan absensi pada sesi ini.',
+                ], 409);
+            }
+
+            throw $exception;
+        }
 
         return response()->json([
             'success' => true,
@@ -141,7 +163,7 @@ class MahasiswaController extends Controller
                 'course_name' => $session->course->nama_mk ?? 'Mata Kuliah',
                 'course_code' => $session->course->kode_mk ?? '-',
                 'time' => $session->schedule
-                    ? $session->schedule->jam_mulai . ' - ' . $session->schedule->jam_selesai
+                    ? $session->schedule->jam_mulai.' - '.$session->schedule->jam_selesai
                     : '-',
                 'room' => $session->schedule->ruang ?? '-',
                 'tipe_sesi' => $session->tipe_sesi,
@@ -186,7 +208,7 @@ class MahasiswaController extends Controller
                 'course_code' => $attendance->attendanceSession->course->kode_mk ?? '-',
                 'date' => $attendance->scanned_at ? $attendance->scanned_at->format('Y-m-d') : '-',
                 'time' => $attendance->attendanceSession->schedule
-                    ? $attendance->attendanceSession->schedule->jam_mulai . ' - ' . $attendance->attendanceSession->schedule->jam_selesai
+                    ? $attendance->attendanceSession->schedule->jam_mulai.' - '.$attendance->attendanceSession->schedule->jam_selesai
                     : '-',
                 'status' => $attendance->status,
             ];
@@ -245,5 +267,10 @@ class MahasiswaController extends Controller
         }
 
         return null;
+    }
+
+    private function isDuplicateAttendanceConstraintViolation(QueryException $exception): bool
+    {
+        return $exception->getCode() === '23000';
     }
 }
