@@ -371,6 +371,17 @@ Content-Type: application/json
 
 ## Pengembangan
 
+### Catatan Hardening & Maintenance
+
+- Ringkasan hardening terbaru ada di `docs/production-hardening-notes.md`.
+- Panduan update aman dan maintenance ada di `docs/update-maintenance-guide.md`.
+- Jika mengubah flow scan, auth, atau role access, jalankan minimal:
+
+```bash
+php artisan test tests/Feature/AttendanceFlowTest.php
+php artisan test tests/Feature/SecurityHardeningTest.php
+```
+
 ### Menjalankan Tes
 
 ```bash
