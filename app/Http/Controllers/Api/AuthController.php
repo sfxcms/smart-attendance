@@ -7,6 +7,7 @@ use App\Http\Requests\Api\LoginRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -25,7 +26,11 @@ class AuthController extends Controller
         // Revoke old tokens
         $user->tokens()->delete();
 
-        $token = $user->createToken('android-' . $user->id)->plainTextToken;
+        $token = $user->createToken(
+            'android-'.$user->id,
+            ['*'],
+            Carbon::now()->addMinutes(config('sanctum.expiration'))
+        )->plainTextToken;
 
         return response()->json([
             'success' => true,
